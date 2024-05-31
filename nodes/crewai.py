@@ -428,53 +428,6 @@ class FRTNode:
     def set_frt(self,file_path):
         frt = FileReadTool(file_path=file_path)
         return (frt,)
-   
-# class Tool1_Node:
-#     def __init__(self):
-#         pass
-
-#     @classmethod
-#     def INPUT_TYPES(s):
-#         return {
-#             "required": {
-#                 "url": ("STRING",),
-#             },
-#         }
-#     RETURN_TYPES = ("TOOL",)
-#     RETURN_NAMES = ()
-
-#     FUNCTION = "set_tool1"
-
-#     OUTPUT_NODE = True
-
-#     CATEGORY = "Crewai/tools"
-    
-#     def set_tool1(self, url):
-#         swt = ScrapeWebsiteTool(website_url=url)
-#         return (swt,)
-    
-# class PDFSearchToolNode:
-#     def __init__(self):
-#         pass
-    
-#     @classmethod
-#     def INPUT_TYPES(s):
-#         return {
-#             "required": {
-#                 "pdf_file": ("STRING",),
-#             },
-#         }
-#     RETURN_TYPES = ("PDFSEARCHTOOL",)
-#     RETURN_NAMES = ()
- 
-#     FUNCTION = "pdf_search"
- 
-#     OUTPUT_NODE = True
- 
-#     CATEGORY = "Crewai/tools"
-    
-#     def pdf_search(self, pdf_file):
-#         return PDFSearchTool(pdf=pdf_file)
     
 # A dictionary that contains all nodes you want to export with their names
 # NOTE: names should be globally unique
