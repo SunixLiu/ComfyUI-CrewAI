@@ -1,4 +1,16 @@
-from crewai import Crew,Agent,Task
+from crewai import Crew,Agent,Task, Process
+from crewai_tools import (
+    ScrapeWebsiteTool, 
+    SerperDevTool, 
+    FileReadTool,
+    PDFSearchTool,
+    MDXSearchTool,
+    CSVSearchTool
+    )
+import os
+os.environ["SERPER_API_KEY"] = "88dd154f3a7fbb3bd72f1f98df676deb94ceaedb"
+
+
 from langchain_openai import ChatOpenAI
 
 class CrewNode:
@@ -9,8 +21,8 @@ class CrewNode:
     def INPUT_TYPES(s):
         return {
             "required": {
-                "agent": ("AGENT",),
-                "task":("TASK",),
+                "agents": ("AGENTLIST",),
+                "tasks":("TASKLIST",),
             },
             "optional": {
                 "verbose":("BOOLEAN", {"default": False}),
@@ -28,10 +40,8 @@ class CrewNode:
  
     CATEGORY = "Crewai"
   
-    def execute(self,agent,task, verbose,manager_llm=None,function_calling_llm=None):
-        # print("Agent: ",agent)
-        # print("Task: ",task)
-        crew = Crew(agents=[agent],tasks=[task], 
+    def execute(self,agents,tasks, verbose,manager_llm=None,function_calling_llm=None):
+        crew = Crew(agents=[agents],tasks=[tasks], 
                     verbose=verbose, 
                     manager_llm=manager_llm if manager_llm is not None else None,
                     function_calling_llm=function_calling_llm if function_calling_llm is not None else None
@@ -55,6 +65,15 @@ class AgentNode:
             },
             "optional":{
                 "llm": ("LLM",),
+                "function_calling_llm": ("LLM",),
+                "tools":("TOOLLIST",),
+                "max_iter": ("INT", {"default": 25,"min": 0, "max": 100, "step": 1}),
+                "max_rpm": ("INT", {"default": None,"min": 0, "max": 100, "step": 1}),
+                "max_execution_time": ("INT", {"default": None,"min": 0, "max": 1000, "step": 1}),
+                "verbose": ("BOOLEAN", {"default": False}),
+                "allow_delegation": ("BOOLEAN", {"default": True}),
+                "step_callback": ("FUNCTION", {"default": None}),
+                "cache": ("BOOLEAN", {"default": True}),
             }
         }
  
@@ -67,11 +86,42 @@ class AgentNode:
  
     CATEGORY = "Crewai"
  
-    def set_one_agent(self,role,goal, backstory,llm=None):
-        if llm is not None:
-            agent = Agent(role=role,goal=goal,backstory=backstory,llm=llm)
-        else:
-            agent = Agent(role=role,goal=goal,backstory=backstory)
+    def set_one_agent(self,
+                      role,
+                      goal, 
+                      backstory,
+                      llm=None,
+                      function_calling_llm=None,
+                      tools=[],
+                      max_iter=25,
+                      max_rpm=None,
+                      max_execution_time=None,
+                      verbose=False,
+                      allow_delegation=True,
+                      step_callback=None,
+                      cache=True
+                      ):
+        llm = llm if llm is not None else None
+        function_calling_llm = function_calling_llm if function_calling_llm is not None else None
+        tools = tools if len(tools)>0 else []
+        max_rpm = max_rpm if max_rpm >0 else None
+        max_execution_time = max_execution_time if max_execution_time>0 else None
+
+        agent = Agent(
+            role=role,
+            goal=goal,
+            backstory=backstory,
+            llm=llm,
+            function_calling_llm=function_calling_llm,
+            tools=tools,
+            max_iter=max_iter,
+            max_rpm=max_rpm,
+            max_execution_time=max_execution_time,
+            verbose=verbose,
+            allow_delegation=allow_delegation,
+            step_callback=step_callback,
+            cache=cache
+                      )
         print("Excuting in agent function....")
         return (agent,)
     
@@ -88,8 +138,13 @@ class TaskNode:
                 "expected_output": ("STRING", {"multiline": True, "dynamicPrompts": False, "default": ""}),                                                                                      
             },
             "optional": {
+                "tools": ("TOOLLIST",),
                 "async_execution":("BOOLEAN", {"default": False}),
-                "llm": ("LLM",),
+                "context":("TASKLIST",),
+                "output_file":("STRING", {"default": "output.md"}),
+                "callback":("FUNCTION", {"default": None}),
+                "human_feedback":("BOOLEAN", {"default": False}),
+                
             }
         }
  
@@ -102,8 +157,33 @@ class TaskNode:
  
     CATEGORY = "Crewai"
  
-    def set_task(self,description, agent,expected_output,async_execution,llm=None):
-        task = Task(description=description,agent=agent,expected_output=expected_output,async_execution=async_execution,llm=llm if llm is not None else None)
+    def set_task(self,
+                 description, 
+                 agent,
+                 expected_output,
+                 async_execution,
+                 tools=[],
+                 context=[],
+                 output_file="output.md",
+                 callback=None,
+                 human_feedback=False
+                 ):
+        
+        tools = tools if len(tools)>0 else []
+        context = context if len(context)>0 else []
+        callback = callback if callback is not None else None
+
+        task = Task(
+            description=description,
+            agent=agent,
+            expected_output=expected_output,
+            async_execution=async_execution,
+            tools=tools,
+            context=context,
+            output_file=output_file,
+            callback=callback,
+            human_feedback=human_feedback
+            )
         print("Excuting in task function....")
         return (task,)
     
@@ -115,11 +195,11 @@ class LLMNode:
     def INPUT_TYPES(s):
         return {
             "required": {
-                "base_url": ("STRING", {"default": "http://localhost:1234/v1"}),
-                "api_key": ("STRING", {"default": "mykey"}),
+                "base_url": ("STRING", {"default": "https://api.groq.com/openai/v1"}),
+                "api_key": ("STRING", {"default": "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"}),
              },
             "optional":{
-                "model": ("STRING", {"default": "TheBloke/Meta-Llama-3-8B-Instruct-GGUF/Meta-Llama-3-8B-Instruct-Q4_K_M.gguf"}),
+                "model": ("STRING", {"default": "llama3-70b-8192"}),
             }
         }
  
@@ -136,6 +216,266 @@ class LLMNode:
         llm = ChatOpenAI(base_url=base_url,api_key=api_key,model=model)
         return (llm,)
 
+class AgentListNode:
+    def __init__(self):
+        pass
+    
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "agent_01": ("AGENT",),
+            },
+            "optional": {
+                "agent_O2": ("AGENT",),
+                "agent_03": ("AGENT",),
+            }
+        }
+    RETURN_TYPES = ("AGENTLIST",)
+    RETURN_NAMES = ()
+ 
+    FUNCTION = "set_agents"
+ 
+    OUTPUT_NODE = True
+ 
+    CATEGORY = "Crewai"
+    
+    def set_agents(self, agent_01, agent_02=None, agent_03=None):
+        print("within agentlist function...")
+        agentList =[]
+        # print("agent 01: ",agent_01)
+        agentList.append(agent_01)
+        if agent_02 is not None:
+            agentList.append(agent_02)
+        if agent_03 is not None:
+            agentList.append(agent_03)
+        # print(agentList[0])    
+        # print("Len of agentList: ",len(agentList))
+        return (agentList,) 
+
+class TaskListNode:
+    def __init__(self):
+        pass
+    
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "task_01": ("TASK",),
+            },
+            "optional": {
+                "task_O2": ("TASK",),
+                "task_03": ("TASK",),
+            }
+        }
+    RETURN_TYPES = ("TASKLIST",)
+    RETURN_NAMES = ()
+ 
+    FUNCTION = "set_tasks"
+ 
+    OUTPUT_NODE = True
+ 
+    CATEGORY = "Crewai"
+    
+    def set_tasks(self, task_01, task_02=None, task_03=None):
+        print("within task list function...")
+        taskList =[]
+        taskList.append(task_01)
+        if task_02 is not None:
+            taskList.append(task_02)
+        if task_03 is not None:
+            taskList.append(task_03)  
+        # print("Len of task List: ",len(taskList))
+        return (taskList,) 
+
+class ToolsListNode:
+    def __init__(self):
+        pass
+    
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "tool_01": ("TOOL",),
+            },
+            "optional": {
+                "tool_02": ("TOOL",),
+                "tool_03": ("TOOL",),
+                "tool_04": ("TOOL",),
+            }
+        }
+    RETURN_TYPES = ("TOOLLIST",)
+    RETURN_NAMES = ()
+ 
+    FUNCTION = "set_tools"
+ 
+    OUTPUT_NODE = True
+ 
+    CATEGORY = "Crewai/tools"
+    
+    def set_tools(self, tool_01, tool_02=None, tool_03=None,tool_04=None):
+        print("within tool list function...")
+        toolList =[]
+        toolList.append(tool_01)
+        if tool_02 is not None:
+            toolList.append(tool_02)
+        if tool_03 is not None:
+            toolList.append(tool_03)  
+        if tool_04 is not None:
+            toolList.append(tool_04)
+        # print("Len of task List: ",len(toolList))
+        return (toolList,)
+    
+class SWTNode:
+    def __init__(self):
+        pass
+    
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "url": ("STRING", {"default": "https://www.aia.com"}),                
+             },
+        }
+ 
+    RETURN_TYPES = ("TOOL",)
+    RETURN_NAMES = ()
+ 
+    FUNCTION = "set_swt"
+ 
+    OUTPUT_NODE = True
+ 
+    CATEGORY = "Crewai/tools"
+ 
+    def set_swt(self,url):
+        swt = ScrapeWebsiteTool(website_url=url)
+        return (swt,)
+
+#SerperDevTool    
+class SDTNode:
+    def __init__(self):
+        pass
+    
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            # "required": {
+            #     "search_url": ("STRING", {"default": "https://www.aia.com"}),                
+            #  },
+        }
+ 
+    RETURN_TYPES = ("TOOL",)
+    RETURN_NAMES = ()
+ 
+    FUNCTION = "set_sdt"
+ 
+    OUTPUT_NODE = True
+ 
+    CATEGORY = "Crewai/tools"
+ 
+    def set_sdt(self,url):
+        sdt = SerperDevTool()
+        return (sdt,)
+
+#MDXSearchTool    
+class MDXSTNode:
+    def __init__(self):
+        pass
+    
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "file_path": ("STRING",{"default": "/file_path"}),                
+             },
+        }
+ 
+    RETURN_TYPES = ("TOOL",)
+    RETURN_NAMES = ()
+ 
+    FUNCTION = "set_mdxst"
+ 
+    OUTPUT_NODE = True
+ 
+    CATEGORY = "Crewai/tools"
+ 
+    def set_mdxst(self,file_path):
+        mdxst = MDXSearchTool(mdx=file_path)
+        return (mdxst,)
+    
+#FileReadTool    
+class FRTNode:
+    def __init__(self):
+        pass
+    
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "file_path": ("STRING",{"default": "/file_path"}),                
+             },
+        }
+ 
+    RETURN_TYPES = ("TOOL",)
+    RETURN_NAMES = ()
+ 
+    FUNCTION = "set_frt"
+ 
+    OUTPUT_NODE = True
+ 
+    CATEGORY = "Crewai/tools"
+ 
+    def set_frt(self,file_path):
+        frt = FileReadTool(file_path=file_path)
+        return (frt,)
+   
+# class Tool1_Node:
+#     def __init__(self):
+#         pass
+
+#     @classmethod
+#     def INPUT_TYPES(s):
+#         return {
+#             "required": {
+#                 "url": ("STRING",),
+#             },
+#         }
+#     RETURN_TYPES = ("TOOL",)
+#     RETURN_NAMES = ()
+
+#     FUNCTION = "set_tool1"
+
+#     OUTPUT_NODE = True
+
+#     CATEGORY = "Crewai/tools"
+    
+#     def set_tool1(self, url):
+#         swt = ScrapeWebsiteTool(website_url=url)
+#         return (swt,)
+    
+# class PDFSearchToolNode:
+#     def __init__(self):
+#         pass
+    
+#     @classmethod
+#     def INPUT_TYPES(s):
+#         return {
+#             "required": {
+#                 "pdf_file": ("STRING",),
+#             },
+#         }
+#     RETURN_TYPES = ("PDFSEARCHTOOL",)
+#     RETURN_NAMES = ()
+ 
+#     FUNCTION = "pdf_search"
+ 
+#     OUTPUT_NODE = True
+ 
+#     CATEGORY = "Crewai/tools"
+    
+#     def pdf_search(self, pdf_file):
+#         return PDFSearchTool(pdf=pdf_file)
+    
 # A dictionary that contains all nodes you want to export with their names
 # NOTE: names should be globally unique
 NODE_CLASS_MAPPINGS = {
@@ -143,6 +483,15 @@ NODE_CLASS_MAPPINGS = {
     "Agent": AgentNode,
     "Task": TaskNode,
     "LLM": LLMNode,
+    "AgentList": AgentListNode,
+    "TaskList": TaskListNode,
+    "ToolsList": ToolsListNode,
+    "SWT": SWTNode,
+    "SDT": SDTNode,
+    "FRT": FRTNode,
+    "MDXST": MDXSTNode,
+    # "PDFSearchTool": PDFSearchToolNode,
+    # "Tool1": Tool1_Node,
 }
  
 # A dictionary that contains the friendly/humanly readable titles for the nodes
@@ -151,9 +500,16 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "AgentNode": "Node of Agent",
     "TaskNode": "Node of Task",
     "LLMNode": "Node of LLM",
+    "AgentListNode": "Node of AgentList",
+    "TaskListNode": "Node of TaskList",
+    "ToolsListNode": "Node of ToolsList",
+    "SWTNode": "Node of SWT", 
+    "SDTNode": "Node of SDT",
+    "FRTNode": "Node of FRT",
+    "MDSXSTNode": "Node of MDXST",
+    # "PDFSearchToolNode": "Node of PDFSearchTool",
+    # "Tool1_Node": "Node of Tool1 Node",
 }
- 
-
  
  
 # # A dictionary that contains all nodes you want to export with their names
@@ -167,7 +523,6 @@ NODE_DISPLAY_NAME_MAPPINGS = {
 #     "AgentNode": "Node of Agent"
 # }
 
- 
  
 # # A dictionary that contains all nodes you want to export with their names
 # # NOTE: names should be globally unique
