@@ -8,10 +8,12 @@ from crewai_tools import (
     CSVSearchTool
     )
 import os
-os.environ["SERPER_API_KEY"] = "88dd154f3a7fbb3bd72f1f98df676deb94ceaedb"
-
-
 from langchain_openai import ChatOpenAI
+
+os.environ["SERPER_API_KEY"] = "88dd154f3a7fbb3bd72f1f98df676deb94ceaedb"
+os.environ["OPENAI_BASE_URL"]="https://api.groq.com/openai/v1"
+os.environ["OPENAI_API_KEY"] = "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"
+
 
 class CrewNode:
     def __init__(self):
@@ -28,6 +30,7 @@ class CrewNode:
                 "verbose":("BOOLEAN", {"default": False}),
                 "manager_llm": ("LLM",),
                 "function_calling_llm": ("LLM",),
+                # "inputs":("CREW_INPUTS"),
             }
         }
  
@@ -41,14 +44,22 @@ class CrewNode:
     CATEGORY = "Crewai"
   
     def execute(self,agents,tasks, verbose,manager_llm=None,function_calling_llm=None):
-        crew = Crew(agents=[agents],tasks=[tasks], 
+        crew = Crew(agents=agents,tasks=tasks, 
                     verbose=verbose, 
                     manager_llm=manager_llm if manager_llm is not None else None,
                     function_calling_llm=function_calling_llm if function_calling_llm is not None else None
                     )
         print("Before crew kickoff ....")
+        # if inputs is not None:
+        #     crew.set_inputs(inputs)
+        #     crew.kickoff(inputs=inputs)
+        # else:
+        crew.kickoff()
+        print("After crew kickoff ....")
+        # return (crew.get_results(),)
+        # # crew.get_results()
         result = crew.kickoff()
-        print("After in crew function....")
+        # print("After in crew function....")
         return (result,)
  
 class AgentNode:
@@ -227,8 +238,9 @@ class AgentListNode:
                 "agent_01": ("AGENT",),
             },
             "optional": {
-                "agent_O2": ("AGENT",),
+                "agent_02": ("AGENT",),
                 "agent_03": ("AGENT",),
+                "agent_04": ("AGENT",),
             }
         }
     RETURN_TYPES = ("AGENTLIST",)
@@ -240,7 +252,7 @@ class AgentListNode:
  
     CATEGORY = "Crewai"
     
-    def set_agents(self, agent_01, agent_02=None, agent_03=None):
+    def set_agents(self, agent_01, agent_02=None, agent_03=None, agent_04=None):
         print("within agentlist function...")
         agentList =[]
         # print("agent 01: ",agent_01)
@@ -249,6 +261,8 @@ class AgentListNode:
             agentList.append(agent_02)
         if agent_03 is not None:
             agentList.append(agent_03)
+        if agent_04 is not None:
+            agentList.append(agent_04)
         # print(agentList[0])    
         # print("Len of agentList: ",len(agentList))
         return (agentList,) 
@@ -264,8 +278,9 @@ class TaskListNode:
                 "task_01": ("TASK",),
             },
             "optional": {
-                "task_O2": ("TASK",),
+                "task_02": ("TASK",),
                 "task_03": ("TASK",),
+                "task_04": ("TASK",),
             }
         }
     RETURN_TYPES = ("TASKLIST",)
@@ -277,7 +292,7 @@ class TaskListNode:
  
     CATEGORY = "Crewai"
     
-    def set_tasks(self, task_01, task_02=None, task_03=None):
+    def set_tasks(self, task_01, task_02=None, task_03=None, task_04=None):
         print("within task list function...")
         taskList =[]
         taskList.append(task_01)
@@ -285,6 +300,8 @@ class TaskListNode:
             taskList.append(task_02)
         if task_03 is not None:
             taskList.append(task_03)  
+        if task_04 is not None:
+            taskList.append(task_04)
         # print("Len of task List: ",len(taskList))
         return (taskList,) 
 
@@ -325,6 +342,44 @@ class ToolsListNode:
             toolList.append(tool_04)
         # print("Len of task List: ",len(toolList))
         return (toolList,)
+
+class ContextListNode:
+    def __init__(self):
+        pass
+    
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "context_01": ("TASK",),
+            },
+            "optional": {
+                "context_02": ("TASK",),
+                "context_03": ("TASK",),
+                "context_04": ("TASK",),
+            }
+        }
+    RETURN_TYPES = ("TASKLIST",)
+    RETURN_NAMES = ()
+ 
+    FUNCTION = "set_contexts"
+ 
+    OUTPUT_NODE = True
+ 
+    CATEGORY = "Crewai"
+    
+    def set_contexts(self, context_01, context_02=None, context_03=None,context_04=None):
+        print("within context list function...")
+        contextList =[]
+        contextList.append(context_01)
+        if context_02 is not None:
+            contextList.append(context_02)
+        if context_03 is not None:
+            contextList.append(context_03)  
+        if context_04 is not None:
+            contextList.append(context_04)
+        # print("Len of task List: ",len(toolList))
+        return (contextList,)
     
 class SWTNode:
     def __init__(self):
@@ -373,7 +428,7 @@ class SDTNode:
  
     CATEGORY = "Crewai/tools"
  
-    def set_sdt(self,url):
+    def set_sdt(self):
         sdt = SerperDevTool()
         return (sdt,)
 
@@ -443,6 +498,7 @@ NODE_CLASS_MAPPINGS = {
     "SDT": SDTNode,
     "FRT": FRTNode,
     "MDXST": MDXSTNode,
+    "ContextList": ContextListNode,
     # "PDFSearchTool": PDFSearchToolNode,
     # "Tool1": Tool1_Node,
 }
@@ -460,6 +516,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "SDTNode": "Node of SDT",
     "FRTNode": "Node of FRT",
     "MDSXSTNode": "Node of MDXST",
+    "ContextListNode": "Node of ContextList",
     # "PDFSearchToolNode": "Node of PDFSearchTool",
     # "Tool1_Node": "Node of Tool1 Node",
 }
