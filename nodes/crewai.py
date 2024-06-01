@@ -11,8 +11,9 @@ import os
 from langchain_openai import ChatOpenAI
 
 os.environ["SERPER_API_KEY"] = "88dd154f3a7fbb3bd72f1f98df676deb94ceaedb"
-os.environ["OPENAI_BASE_URL"]="https://api.groq.com/openai/v1"
-os.environ["OPENAI_API_KEY"] = "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"
+os.environ["OPENAI_BASE_URL"]="http://localhost:1234/v1"
+os.environ["OPENAI_API_KEY"] = "whatever"
+# os.environ["OPENAI_API_KEY"] = "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"
 
 
 class CrewNode:
@@ -50,14 +51,6 @@ class CrewNode:
                     function_calling_llm=function_calling_llm if function_calling_llm is not None else None
                     )
         print("Before crew kickoff ....")
-        # if inputs is not None:
-        #     crew.set_inputs(inputs)
-        #     crew.kickoff(inputs=inputs)
-        # else:
-        crew.kickoff()
-        print("After crew kickoff ....")
-        # return (crew.get_results(),)
-        # # crew.get_results()
         result = crew.kickoff()
         # print("After in crew function....")
         return (result,)
@@ -133,7 +126,7 @@ class AgentNode:
             step_callback=step_callback,
             cache=cache
                       )
-        print("Excuting in agent function....")
+        # print("Excuting in agent function....")
         return (agent,)
     
 class TaskNode:
@@ -195,7 +188,7 @@ class TaskNode:
             callback=callback,
             human_feedback=human_feedback
             )
-        print("Excuting in task function....")
+        # print("Excuting in task function....")
         return (task,)
     
 class LLMNode:
@@ -253,7 +246,7 @@ class AgentListNode:
     CATEGORY = "Crewai"
     
     def set_agents(self, agent_01, agent_02=None, agent_03=None, agent_04=None):
-        print("within agentlist function...")
+        # print("within agentlist function...")
         agentList =[]
         # print("agent 01: ",agent_01)
         agentList.append(agent_01)
@@ -331,7 +324,7 @@ class ToolsListNode:
     CATEGORY = "Crewai/tools"
     
     def set_tools(self, tool_01, tool_02=None, tool_03=None,tool_04=None):
-        print("within tool list function...")
+        # print("within tool list function...")
         toolList =[]
         toolList.append(tool_01)
         if tool_02 is not None:
