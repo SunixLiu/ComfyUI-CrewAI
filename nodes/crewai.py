@@ -15,7 +15,6 @@ os.environ["OPENAI_BASE_URL"]="https://api.deepseek.com"
 os.environ["OPENAI_API_KEY"] = "your hey kere"
 
 
-
 class CrewNode:
     def __init__(self):
         pass
@@ -50,9 +49,9 @@ class CrewNode:
                     manager_llm=manager_llm if manager_llm is not None else None,
                     function_calling_llm=function_calling_llm if function_calling_llm is not None else None
                     )
-        print("Before crew kickoff ....")
+
         result = crew.kickoff()
-        print("After in crew function....")
+
         return (result,)
  
 class AgentNode:
@@ -126,7 +125,7 @@ class AgentNode:
             step_callback=step_callback,
             cache=cache
                       )
-        print("Excuting in agent function....")
+
         return (agent,)
     
 class TaskNode:
@@ -188,7 +187,7 @@ class TaskNode:
             callback=callback,
             human_feedback=human_feedback
             )
-        print("Excuting in task function....")
+
         return (task,)
     
 class LLMNode:
@@ -246,9 +245,9 @@ class AgentListNode:
     CATEGORY = "Crewai"
     
     def set_agents(self, agent_01, agent_02=None, agent_03=None, agent_04=None):
-        print("within agentlist function...")
+
         agentList =[]
-        # print("agent 01: ",agent_01)
+
         agentList.append(agent_01)
         if agent_02 is not None:
             agentList.append(agent_02)
@@ -256,8 +255,7 @@ class AgentListNode:
             agentList.append(agent_03)
         if agent_04 is not None:
             agentList.append(agent_04)
-        # print(agentList[0])    
-        # print("Len of agentList: ",len(agentList))
+
         return (agentList,) 
 
 class TaskListNode:
@@ -286,7 +284,7 @@ class TaskListNode:
     CATEGORY = "Crewai"
     
     def set_tasks(self, task_01, task_02=None, task_03=None, task_04=None):
-        print("within task list function...")
+
         taskList =[]
         taskList.append(task_01)
         if task_02 is not None:
@@ -295,7 +293,7 @@ class TaskListNode:
             taskList.append(task_03)  
         if task_04 is not None:
             taskList.append(task_04)
-        # print("Len of task List: ",len(taskList))
+
         return (taskList,) 
 
 class ToolsListNode:
@@ -371,7 +369,7 @@ class ContextListNode:
             contextList.append(context_03)  
         if context_04 is not None:
             contextList.append(context_04)
-        # print("Len of task List: ",len(toolList))
+
         return (contextList,)
     
 class SWTNode:
@@ -381,9 +379,7 @@ class SWTNode:
     @classmethod
     def INPUT_TYPES(s):
         return {
-            # "required": {
-            #     "url": ("STRING", {"default": "https://www.aia.com"}),                
-            #  },
+
         }
  
     RETURN_TYPES = ("TOOL",)
@@ -407,9 +403,7 @@ class SDTNode:
     @classmethod
     def INPUT_TYPES(s):
         return {
-            # "required": {
-            #     "search_url": ("STRING", {"default": "https://www.aia.com"}),                
-            #  },
+
         }
  
     RETURN_TYPES = ("TOOL",)
@@ -492,8 +486,7 @@ NODE_CLASS_MAPPINGS = {
     "FRT": FRTNode,
     "MDXST": MDXSTNode,
     "ContextList": ContextListNode,
-    # "PDFSearchTool": PDFSearchToolNode,
-    # "Tool1": Tool1_Node,
+
 }
  
 # A dictionary that contains the friendly/humanly readable titles for the nodes
@@ -510,30 +503,5 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "FRTNode": "Node of FRT",
     "MDSXSTNode": "Node of MDXST",
     "ContextListNode": "Node of ContextList",
-    # "PDFSearchToolNode": "Node of PDFSearchTool",
-    # "Tool1_Node": "Node of Tool1 Node",
 }
  
- 
-# # A dictionary that contains all nodes you want to export with their names
-# # NOTE: names should be globally unique
-# NODE_CLASS_MAPPINGS = {
-#     "Agent": Agent
-# }
- 
-# # A dictionary that contains the friendly/humanly readable titles for the nodes
-# NODE_DISPLAY_NAME_MAPPINGS = {
-#     "AgentNode": "Node of Agent"
-# }
-
- 
-# # A dictionary that contains all nodes you want to export with their names
-# # NOTE: names should be globally unique
-# NODE_CLASS_MAPPINGS = {
-#     "Task": Task
-# }
- 
-# # A dictionary that contains the friendly/humanly readable titles for the nodes
-# NODE_DISPLAY_NAME_MAPPINGS = {
-#     "TaskNode": "Node of Task"
-# }
