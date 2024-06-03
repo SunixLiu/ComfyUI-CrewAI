@@ -10,10 +10,10 @@ from crewai_tools import (
 import os
 from langchain_openai import ChatOpenAI
 
-os.environ["SERPER_API_KEY"] = "88dd154f3a7fbb3bd72f1f98df676deb94ceaedb"
+os.environ["SERPER_API_KEY"] = "your key here"
 os.environ["OPENAI_BASE_URL"]="https://api.deepseek.com"
-os.environ["OPENAI_API_KEY"] = "sk-4e7115c081a949599fd87fd24d4da925"
-# os.environ["OPENAI_API_KEY"] = "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"
+os.environ["OPENAI_API_KEY"] = "your hey kere"
+
 
 
 class CrewNode:
@@ -200,10 +200,10 @@ class LLMNode:
         return {
             "required": {
                 "base_url": ("STRING", {"default": "https://api.deepseek.com"}),
-                "api_key": ("STRING", {"default": "sk-4e7115c081a949599fd87fd24d4da925"}),
+                "api_key": ("STRING", {"default": "your key here"}),
              },
             "optional":{
-                "model": ("STRING", {"default": "llama3-70b-8192"}),
+                "model": ("STRING", {"default": "deepseek-chat"}),
             }
         }
  
