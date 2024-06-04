@@ -20,9 +20,9 @@ Inspired by [ComfyUI](https://github.com/comfyanonymous/ComfyUI) and [CrewAI](ht
 11. MDX search tool, refer to [MDX search tool](https://docs.crewai.com/tools/MDXSearchTool/)
 
 ### Installation
-. Install [ComfyUI](https://github.com/comfyanonymous/ComfyUI) by following the instructions on their GitHub page
-. Clone this repository to custom_nodes folder
-. Install requirements by running
+1. Install [ComfyUI](https://github.com/comfyanonymous/ComfyUI) by following the instructions on their GitHub page
+2. Clone this repository to custom_nodes folder
+3. Install requirements by running
 `pip install -r requirements.txt`
 or if you use portable (run this in ComfyUI_windows_portable -folder):
 `python_embeded\python.exe -m pip install -r ComfyUI\custom_nodes\ComfyUI-CrewAI\requirements.txt`
