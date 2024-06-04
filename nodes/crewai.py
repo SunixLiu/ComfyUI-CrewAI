@@ -3,16 +3,16 @@ from crewai_tools import (
     ScrapeWebsiteTool, 
     SerperDevTool, 
     FileReadTool,
-    PDFSearchTool,
+    # PDFSearchTool,
     MDXSearchTool,
-    CSVSearchTool
+    # CSVSearchTool
     )
 import os
 from langchain_openai import ChatOpenAI
 
-os.environ["SERPER_API_KEY"] = "your key here"
-os.environ["OPENAI_BASE_URL"]="https://api.deepseek.com"
-os.environ["OPENAI_API_KEY"] = "your hey kere"
+os.environ["SERPER_API_KEY"] = "639dad399ef2971cf44bcd705f7b9817b0296aba"
+os.environ["OPENAI_BASE_URL"]="https://api.groq.com/openai/v1"
+os.environ["OPENAI_API_KEY"] = "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"
 
 
 class CrewNode:
