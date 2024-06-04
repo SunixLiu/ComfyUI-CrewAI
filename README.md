@@ -32,7 +32,6 @@ or if you use portable (run this in ComfyUI_windows_portable -folder):
 2. Add more nodes to the list
 3. Add same examples to the list
 
-### Contributing
-Contributions are welcome! If you have any ideas for new nodes or improvements to existing nodes, please submit a pull request.
+
 ### License
 [MIT](./LICENSE)
