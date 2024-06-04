@@ -1,0 +1,600 @@
+{
+  "last_node_id": 12,
+  "last_link_id": 12,
+  "nodes": [
+    {
+      "id": 8,
+      "type": "AgentList",
+      "pos": [
+        1141,
+        305
+      ],
+      "size": {
+        "0": 229.20001220703125,
+        "1": 86
+      },
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "agent_01",
+          "type": "AGENT",
+          "link": 8
+        },
+        {
+          "name": "agent_02",
+          "type": "AGENT",
+          "link": null
+        },
+        {
+          "name": "agent_03",
+          "type": "AGENT",
+          "link": null
+        },
+        {
+          "name": "agent_04",
+          "type": "AGENT",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "AGENTLIST",
+          "type": "AGENTLIST",
+          "links": [
+            9
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "AgentList"
+      }
+    },
+    {
+      "id": 4,
+      "type": "SDT",
+      "pos": [
+        44,
+        278
+      ],
+      "size": {
+        "0": 210,
+        "1": 26
+      },
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "TOOL",
+          "type": "TOOL",
+          "links": [
+            3
+          ],
+          "shape": 3
+        }
+      ],
+      "title": "Google search tool",
+      "properties": {
+        "Node name for S&R": "SDT"
+      }
+    },
+    {
+      "id": 2,
+      "type": "LLM",
+      "pos": [
+        421,
+        135
+      ],
+      "size": {
+        "0": 315,
+        "1": 106
+      },
+      "flags": {
+        "collapsed": true
+      },
+      "order": 1,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "LLM",
+          "type": "LLM",
+          "links": [
+            1
+          ],
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LLM"
+      },
+      "widgets_values": [
+        "https://api.groq.com/openai/v1",
+        "your key here",
+        "model name"
+      ]
+    },
+    {
+      "id": 3,
+      "type": "ToolsList",
+      "pos": [
+        356,
+        377
+      ],
+      "size": {
+        "0": 210,
+        "1": 86
+      },
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "tool_01",
+          "type": "TOOL",
+          "link": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "tool_02",
+          "type": "TOOL",
+          "link": 4,
+          "slot_index": 1
+        },
+        {
+          "name": "tool_03",
+          "type": "TOOL",
+          "link": null
+        },
+        {
+          "name": "tool_04",
+          "type": "TOOL",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "TOOLLIST",
+          "type": "TOOLLIST",
+          "links": [
+            2,
+            6
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ToolsList"
+      }
+    },
+    {
+      "id": 10,
+      "type": "ShowText|pysssss",
+      "pos": [
+        1910,
+        349
+      ],
+      "size": [
+        528.444705400779,
+        397.5142087883637
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 11,
+          "widget": {
+            "name": "text"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": null,
+          "shape": 6
+        }
+      ],
+      "title": "Result",
+      "properties": {
+        "Node name for S&R": "ShowText|pysssss"
+      },
+      "widgets_values": [
+        ""
+      ]
+    },
+    {
+      "id": 9,
+      "type": "Crew",
+      "pos": [
+        1484.0072870799347,
+        324.5454654931716
+      ],
+      "size": {
+        "0": 342.5999755859375,
+        "1": 118
+      },
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "agents",
+          "type": "AGENTLIST",
+          "link": 9
+        },
+        {
+          "name": "tasks",
+          "type": "TASKLIST",
+          "link": 10
+        },
+        {
+          "name": "manager_llm",
+          "type": "LLM",
+          "link": null
+        },
+        {
+          "name": "function_calling_llm",
+          "type": "LLM",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "RESULT",
+          "type": "STRING",
+          "links": [
+            11
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Crew"
+      },
+      "widgets_values": [
+        true
+      ]
+    },
+    {
+      "id": 7,
+      "type": "TaskList",
+      "pos": [
+        1145,
+        449
+      ],
+      "size": [
+        219.02404687885883,
+        86
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "task_01",
+          "type": "TASK",
+          "link": 7
+        },
+        {
+          "name": "task_02",
+          "type": "TASK",
+          "link": null
+        },
+        {
+          "name": "task_03",
+          "type": "TASK",
+          "link": null
+        },
+        {
+          "name": "task_04",
+          "type": "TASK",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "TASKLIST",
+          "type": "TASKLIST",
+          "links": [
+            10
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "TaskList"
+      }
+    },
+    {
+      "id": 1,
+      "type": "Agent",
+      "pos": [
+        641,
+        -101
+      ],
+      "size": [
+        439.53527673725694,
+        475.20191980732784
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "llm",
+          "type": "LLM",
+          "link": 1,
+          "slot_index": 0
+        },
+        {
+          "name": "function_calling_llm",
+          "type": "LLM",
+          "link": null
+        },
+        {
+          "name": "tools",
+          "type": "TOOLLIST",
+          "link": 2,
+          "slot_index": 2
+        },
+        {
+          "name": "step_callback",
+          "type": "FUNCTION",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "AGENT",
+          "type": "AGENT",
+          "links": [
+            5,
+            8
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "title": "researcher",
+      "properties": {
+        "Node name for S&R": "Agent"
+      },
+      "widgets_values": [
+        "you are a professional internet researcher",
+        "you search internet for all latest news about HSBC insurance and write professional report ",
+        "you search and collect information carefully\nyou can analyze all information based on your professional knowledge and years of experience about how an insurance company is operating and how the public and security company give comments to the company",
+        25,
+        0,
+        0,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": 6,
+      "type": "Task",
+      "pos": [
+        645,
+        437
+      ],
+      "size": [
+        442.7652143119117,
+        509.757921648471
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "agent",
+          "type": "AGENT",
+          "link": 5
+        },
+        {
+          "name": "tools",
+          "type": "TOOLLIST",
+          "link": 6
+        },
+        {
+          "name": "context",
+          "type": "TASKLIST",
+          "link": null
+        },
+        {
+          "name": "callback",
+          "type": "FUNCTION",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "TASK",
+          "type": "TASK",
+          "links": [
+            7
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Task"
+      },
+      "widgets_values": [
+        "you search most related content from the internet for all news about HSBC insurance company,i then consolidate summaries from two angels:\n1. From public's view\n2. From security analyst point of view\n\nyou will analyse the result above and then you will write a research report based on your analysis, with well and proffesional format, the audience of the report is senior enecutives ",
+        "a well formatted in markdown, very logical, and professional research report",
+        true,
+        "research_rpt_hsbc.md",
+        false
+      ]
+    },
+    {
+      "id": 12,
+      "type": "Note",
+      "pos": [
+        86,
+        -99
+      ],
+      "size": [
+        461.2487392480989,
+        72.89564389124698
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "properties": {
+        "text": ""
+      },
+      "widgets_values": [
+        "This is to demonstrate how to use single agent to search internet\nand write company research report"
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 5,
+      "type": "SWT",
+      "pos": [
+        43,
+        404
+      ],
+      "size": {
+        "0": 210,
+        "1": 26
+      },
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "TOOL",
+          "type": "TOOL",
+          "links": [
+            4
+          ],
+          "shape": 3
+        }
+      ],
+      "title": "Scrape website tool",
+      "properties": {
+        "Node name for S&R": "SWT"
+      }
+    }
+  ],
+  "links": [
+    [
+      1,
+      2,
+      0,
+      1,
+      0,
+      "LLM"
+    ],
+    [
+      2,
+      3,
+      0,
+      1,
+      2,
+      "TOOLLIST"
+    ],
+    [
+      3,
+      4,
+      0,
+      3,
+      0,
+      "TOOL"
+    ],
+    [
+      4,
+      5,
+      0,
+      3,
+      1,
+      "TOOL"
+    ],
+    [
+      5,
+      1,
+      0,
+      6,
+      0,
+      "AGENT"
+    ],
+    [
+      6,
+      3,
+      0,
+      6,
+      1,
+      "TOOLLIST"
+    ],
+    [
+      7,
+      6,
+      0,
+      7,
+      0,
+      "TASK"
+    ],
+    [
+      8,
+      1,
+      0,
+      8,
+      0,
+      "AGENT"
+    ],
+    [
+      9,
+      8,
+      0,
+      9,
+      0,
+      "AGENTLIST"
+    ],
+    [
+      10,
+      7,
+      0,
+      9,
+      1,
+      "TASKLIST"
+    ],
+    [
+      11,
+      9,
+      0,
+      10,
+      0,
+      "STRING"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.6209213230591555,
+      "offset": [
+        23.98708684927628,
+        188.23828597188108
+      ]
+    }
+  },
+  "version": 0.4
+}
