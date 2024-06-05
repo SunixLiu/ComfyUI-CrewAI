@@ -8,13 +8,13 @@ Inspired by [ComfyUI](https://github.com/comfyanonymous/ComfyUI) and [CrewAI](ht
 
 ### Nodes implemented
 1. Crew, refer to [Crews](https://docs.crewai.com/core-concepts/Crews/)
-2. LLM
+2. LLM, although you can use node to set LLM for agent and crew, but you may still need to modify the nodes/crewai.py and set the `os.environ["OPENAI_API_KEY"] = "your key here" ` and `os.environ["OPENAI_API_BASE"] = "your base here" `
 3. Agent, refer to [Agents](https://docs.crewai.com/core-concepts/Agents/)
 4. Agent List
 5. Task, refer to [Tasks](https://docs.crewai.com/core-concepts/Tasks/)
 6. Task List
 7. Tool list
-8. Serper Dev tool, refer to [Serper Dev tool](https://docs.crewai.com/tools/SerperDevTool/)
+8. Serper Dev tool, refer to [Serper Dev tool](https://docs.crewai.com/tools/SerperDevTool/) and you need modify the nodes/crewai.py and set the `os.environ["SERPER_API_KEY"] = "your key here" `
 9. Scrape Website tool, refer to [Scrape Website tool](https://docs.crewai.com/tools/ScrapeWebsiteTool/)
 10. File read tool, refer to [File read tool](https://docs.crewai.com/tools/FileReadTool/)
 11. MDX search tool, refer to [MDX search tool](https://docs.crewai.com/tools/MDXSearchTool/)
