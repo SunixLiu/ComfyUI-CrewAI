@@ -3,16 +3,17 @@ from crewai_tools import (
     ScrapeWebsiteTool, 
     SerperDevTool, 
     FileReadTool,
-    # PDFSearchTool,
+    PDFSearchTool,
     MDXSearchTool,
-    # CSVSearchTool
+    CSVSearchTool,
+    DirectoryReadTool
     )
 import os
 from langchain_openai import ChatOpenAI
 
-os.environ["SERPER_API_KEY"] = "639dad399ef2971cf44bcd705f7b9817b0296aba"
+os.environ["SERPER_API_KEY"] = "your key here"
 os.environ["OPENAI_BASE_URL"]="https://api.groq.com/openai/v1"
-os.environ["OPENAI_API_KEY"] = "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"
+os.environ["OPENAI_API_KEY"] = "your key here"
 
 
 class CrewNode:
@@ -30,6 +31,10 @@ class CrewNode:
                 "verbose":("BOOLEAN", {"default": False}),
                 "manager_llm": ("LLM",),
                 "function_calling_llm": ("LLM",),
+                "max_rpm": ("INT", { "default": 25,"min": 0, "max": 100, "step": 1}),
+                "language": ("STRING", {"default": "English"}),
+                "memory": ("BOOLEAN", {"default": False}),
+                "process":(["sequential","hierarchyical"],{"default": "sequential"}),
                 # "inputs":("CREW_INPUTS"),
             }
         }
